@@ -2,8 +2,12 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+const connect = require('./data/helpers/db')
+connect()
+
 const logger = require('./middlewares/logger')
 app.use(logger)
+
 
 app.get('/', (req, res) => {
     res.send("<h1>Welcome !</h1><br/><a href='./toto'>Visiter la page de Toto</a>")
