@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 
 const connect = () => {
-    mongoose.connect('mongodb+srv://kim:mydigitalschool@cluster0.ebxgnxd.mongodb.net/?retryWrites=true&w=majority')
+    mongoose.connect('mongodb+srv://kim:mydigitalschool@cluster0.ebxgnxd.mongodb.net/NodeMDS?retryWrites=true&w=majority')
     .then(() => {
         console.log('Database connected')
     })
