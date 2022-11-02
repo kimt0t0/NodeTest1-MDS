@@ -14,6 +14,8 @@ const logger = require('./middlewares/logger')
 app.use(logger)
 
 app.use('/users', require('./routes/users'))
+app.use('/auth', require('./routes/auth'))
+app.use('/protected', require('./routes/protected'))
 
 // useless
 app.get('/', (req, res) => {
