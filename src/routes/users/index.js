@@ -49,7 +49,7 @@ router.route('/:id')
     const user = req.body
     try {
       const updatedUser = await updateUserById(id, user)
-      return updatedUser
+      return res.send(updatedUser)
     } catch (e) {
       return res.status(500).send(e)
     }
