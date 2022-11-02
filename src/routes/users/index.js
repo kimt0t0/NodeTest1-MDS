@@ -1,47 +1,70 @@
+const { getUsers, createUser, getUserById, updateUserById, deleteUserById } = require('../../controllers/users.controller')
 const User = require('../../data/models/User')
 
 const router = require('express').Router()
 
 // comme déjà dans dossier routes, ici on est à la racine de /users:
 router.route('/')
+
 // Create a user
-.post(async (req, res) => {
-    // récupération des paramètres de la requête:
-    const user = req.body
-    // vérification présence champs obligatoires:
-    if (!user.email || !user.password) {
-        return res.status(400).send('Data is missing !')
-    }
-    
-    // si paramètres ok création utilisateur (sur le modèle):
+  .post(async (req, res) => {
     try {
-
-        const _user = new User({
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phone: user.phone,
-            email: user.email,
-            password: user.password
-        })
-
-        const savedUser = await _user.save()
-        // on transforme le résultat en objet 
-        let savedUserObject = savedUser.toObject()
-        // on retire le mdp de la réponse
-        delete savedUserObject.password
-
-        return res.send(savedUserObject)
-
+      const userCreated = await createUser(req.body)
+      return res.send(userCreated)
     } catch (error) {
-        return res.status(500).send(error)
+      return res.status(500).send(error)
     }
 
-    /*Même rôle mais moins opti:
+    /* Même rôle mais moins opti:
      user.save()
     .then((data) => console.log('Réponse: ', data))
     .catch((err) => console.error('Erreur: ', err))
     res.send() */
+  })
 
-})
+//   Récupération tous utilisateurs
+  .get(async (req, res) => {
+    const users = await getUsers()
+    return res.send(users)
+  })
+
+// Nouvelle route
+router.route('/:id')
+
+// Récupération un utilisateur par id dans l'URL
+  .get(async (req, res) => {
+    const id = req.params.id
+
+    try {
+      const user = await getUserById(id)
+      return res.send(user)
+    } catch (e) {
+      return res.status(500).send(e)
+    }
+  })
+
+// Màj utilisateur
+  .patch(async (req, res) => {
+    const id = req.params.id
+    const user = req.body
+    try {
+      const updatedUser = await updateUserById(id, user)
+      return updatedUser
+    } catch (e) {
+      return res.status(500).send(e)
+    }
+  })
+
+// Suppression utilisateur
+  .delete(async (req, res) => {
+    const id = req.params.id
+
+    try {
+      await deleteUserById(id)
+      return res.send(`L'utilisateur avec l'ID ${id} a été supprimé !`)
+    } catch (e) {
+      return res.status(500).send(e)
+    }
+  })
 
 module.exports = router
